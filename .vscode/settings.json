@@ -1,0 +1,30 @@
+{
+  "editor.fontSize": 14,
+  "editor.formatOnSave": true,
+  "[sql]": {
+    "editor.defaultFormatter": "Oracle.sql-developer",
+    "editor.formatOnSave": true
+  },
+  "oracledevtools.connectionConfiguration.configFilesFolder": "${workspaceFolder}/.vscode",
+  "sqltools.useNodeRuntime": true,
+  "sqltools.connections": [
+    {
+      "oracleOptions": {
+        "privilege": "Normal",
+        "thickMode": false,
+        "autoCommit": false,
+        "lowerCase": false,
+        "limitPrefetchRows": false,
+        "serviceName": "23ai_34ui2"
+      },
+      "previewLimit": 50,
+      "server": "db.freesql.com",
+      "port": 1521,
+      "driver": "Oracle",
+      "name": "FreeSql_23ai",
+      "database": "23ai_34ui2",
+      "username": "P_LORITE_SCHEMA_NPYYS",
+      "password": "KOMWJBEBG2sNB5D5I36IQDTLA!ILL4"
+    }
+  ]
+}

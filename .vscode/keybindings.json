@@ -1,0 +1,12 @@
+[
+  {
+    "key": "f5",
+    "command": "oracledevtools.executeQuery",
+    "when": "editorLangId == sql"
+  },
+  {
+    "key": "ctrl+shift+e",
+    "command": "oracledevtools.explainPlan",
+    "when": "editorLangId == sql"
+  }
+]
