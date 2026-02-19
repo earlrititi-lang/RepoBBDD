@@ -16,6 +16,7 @@ INSERT INTO PELICULAS VALUES (1001, 'El Padrino',      'drama');
 INSERT INTO PELICULAS VALUES (1002, 'Tiburón',         'suspense');
 INSERT INTO PELICULAS VALUES (1003, 'Scary Movie',     'comedia');
 INSERT INTO PELICULAS VALUES (1004, 'Alien',           'ficcion');
+COMMIT;
 
 -- Copias (varias por película)
 INSERT INTO COPIAS VALUES (1, 1001, 'libre');
@@ -24,17 +25,20 @@ INSERT INTO COPIAS VALUES (1, 1002, 'libre');
 INSERT INTO COPIAS VALUES (2, 1002, 'libre');
 INSERT INTO COPIAS VALUES (1, 1003, 'alquilada');
 INSERT INTO COPIAS VALUES (1, 1004, 'libre');
+COMMIT;
 
 -- Clientes
 INSERT INTO CLIENTES VALUES (1, 'María Sánchez', '12345678A', 600111222);
 INSERT INTO CLIENTES VALUES (2, 'Pedro Gómez',   '87654321B', 600333444);
 INSERT INTO CLIENTES VALUES (3, 'Laura Torres',  '11223344C', 600555666);
+COMMIT;
 
 -- Alquileres
 INSERT INTO ALQUILERES VALUES (1, 2, 1001, DATE '2024-11-01');   -- María alquiló copia 2 de El Padrino
 INSERT INTO ALQUILERES VALUES (2, 1, 1002, DATE '2024-11-05');   -- Pedro alquiló copia 1 de Tiburón
 INSERT INTO ALQUILERES VALUES (1, 1, 1003, DATE '2024-11-10');   -- María alquiló copia 1 de Scary Movie
 INSERT INTO ALQUILERES VALUES (3, 1, 1004, DATE '2024-11-12');   -- Laura alquiló copia 1 de Alien
+COMMIT;
 
 
 
@@ -60,9 +64,10 @@ SELECT * FROM COPIAS WHERE CODPELICULA = 1004;
 
 -- El alquiler de Alien impide borrarla directamente. Lo eliminamos:
 DELETE FROM ALQUILERES WHERE CODPELICULA = 1004;
-
+COMMIT;
 -- Ahora sí borramos la película:
 DELETE FROM PELICULAS WHERE CODPELICULA = 1004;
+COMMIT;
 
 
 -- Verificamos que la copia huérfana ha desaparecido (CASCADE FK_COPIAS_PELICULAS):
@@ -89,6 +94,7 @@ SELECT * FROM ALQUILERES WHERE CODCLIENTE = 1;
 
 -- Intentamos borrar a María → DEBE FALLAR:
 DELETE FROM CLIENTES WHERE CODCLIENTE = 1;
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_ALQUILERES_CLIENTES) violated - child record found
 -- ✗ No se puede borrar porque tiene alquileres registrados.
@@ -109,6 +115,7 @@ SELECT * FROM ALQUILERES WHERE CODCOPIA = 2 AND CODPELICULA = 1001;
 
 -- Intentamos borrar esa copia → DEBE FALLAR:
 DELETE FROM COPIAS WHERE CODCOPIA = 2 AND CODPELICULA = 1001;
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_ALQUILERES_COPIAS) violated - child record found
 -- ✗ No se puede borrar porque tiene alquileres registrados.
@@ -132,6 +139,7 @@ SELECT * FROM ALQUILERES WHERE CODPELICULA = 1002;
 -- Intentamos borrar Tiburón → DEBE FALLAR (aunque CASCADE borraría
 -- sus copias, RESTRICT en ALQUILERES lo impide primero):
 DELETE FROM PELICULAS WHERE CODPELICULA = 1002;
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_ALQUILERES_PELICULAS) violated - child record found
 -- ✗ No se puede borrar porque tiene alquileres registrados.
@@ -151,8 +159,10 @@ DELETE FROM PELICULAS WHERE CODPELICULA = 1002;
 
 -- Paso 1: eliminar alquileres de la película
 DELETE FROM ALQUILERES WHERE CODPELICULA = 1001;
+COMMIT;
 -- Paso 2: eliminar la película (CASCADE borrará sus copias automáticamente)
 DELETE FROM PELICULAS WHERE CODPELICULA = 1001;
+COMMIT;
 
 
 -- Verificamos que tanto la película como sus copias han desaparecido:

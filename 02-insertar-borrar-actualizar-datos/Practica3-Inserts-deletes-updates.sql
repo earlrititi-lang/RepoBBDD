@@ -16,38 +16,44 @@
 INSERT INTO FAMILIA VALUES (1, 'Analgésicos');
 INSERT INTO FAMILIA VALUES (2, 'Antibióticos');
 INSERT INTO FAMILIA VALUES (3, 'Antiinflamatorios');
+COMMIT;
 
 -- Laboratorios
 INSERT INTO LABORATORIO (CODIGO, NOMBRE) VALUES (10, 'Pfizer');
 INSERT INTO LABORATORIO (CODIGO, NOMBRE) VALUES (20, 'Bayer');
 INSERT INTO LABORATORIO (CODIGO, NOMBRE) VALUES (30, 'Novartis');
+COMMIT;
 
 -- Medicamentos
 INSERT INTO MEDICAMENTO VALUES (101, 'Paracetamol', 'Comprimido', 100, 50, 2.50,  'NO', 1, 10);
 INSERT INTO MEDICAMENTO VALUES (102, 'Ibuprofeno',  'Comprimido',  80, 30, 3.20,  'NO', 3, 20);
 INSERT INTO MEDICAMENTO VALUES (103, 'Amoxicilina', 'Cápsula',     60, 20, 8.75,  'SI', 2, 20);
 INSERT INTO MEDICAMENTO VALUES (104, 'Aspirina',    'Comprimido',  90, 40, 1.80,  'NO', 1, 30);
+COMMIT;
 
 -- Clientes
 INSERT INTO CLIENTE VALUES ('12345678A', '600111222', 'Calle Mayor 1');
 INSERT INTO CLIENTE VALUES ('87654321B', '600333444', 'Avenida Sol 5');
 INSERT INTO CLIENTE VALUES ('11223344C', '600555666', 'Plaza Luna 3');
 INSERT INTO CLIENTE VALUES ('99887766D', '600777888', 'Calle Mar 7');
-
+COMMIT;
 -- Datos bancarios (crédito) — solo algunos clientes
 INSERT INTO C_CREDITO VALUES ('12345678A', 'ES12 1234 5678 9012 3456 7890');
 INSERT INTO C_CREDITO VALUES ('87654321B', 'ES98 9876 5432 1098 7654 3210');
 INSERT INTO C_CREDITO VALUES ('99887766D', 'ES55 1111 2222 3333 4444 5555');
+COMMIT;
 
 -- Compras a crédito
 INSERT INTO COMP_CREDITO VALUES (101, '12345678A', DATE '2024-10-01', 2, DATE '2024-11-01');
 INSERT INTO COMP_CREDITO VALUES (103, '12345678A', DATE '2024-10-15', 1, NULL);
 INSERT INTO COMP_CREDITO VALUES (102, '87654321B', DATE '2024-11-03', 3, DATE '2024-12-03');
+COMMIT;
 
 -- Compras al contado
 INSERT INTO COMP_EFEC VALUES (101, '11223344C', DATE '2024-10-05', 1);
 INSERT INTO COMP_EFEC VALUES (104, '11223344C', DATE '2024-10-20', 2);
 INSERT INTO COMP_EFEC VALUES (102, '87654321B', DATE '2024-11-10', 1);
+COMMIT;
 
 
 -- ================================================================
@@ -69,6 +75,7 @@ SELECT * FROM C_CREDITO WHERE DNI = '99887766D';
 
 -- Borramos el cliente:
 DELETE FROM CLIENTE WHERE DNI = '99887766D';
+COMMIT;
 
 -- Verificamos que sus datos bancarios han desaparecido (CASCADE):
 SELECT * FROM C_CREDITO WHERE DNI = '99887766D';
@@ -91,6 +98,7 @@ SELECT CODIGO, NOMBRE, COD_LABORATORIO FROM MEDICAMENTO WHERE COD_LABORATORIO = 
 
 -- Borramos el laboratorio:
 DELETE FROM LABORATORIO WHERE CODIGO = 30;
+COMMIT;
 
 -- Verificamos que Aspirina sigue existiendo pero con COD_LABORATORIO = NULL:
 SELECT CODIGO, NOMBRE, COD_LABORATORIO FROM MEDICAMENTO WHERE CODIGO = 104;
@@ -116,6 +124,7 @@ SELECT CODIGO, NOMBRE FROM MEDICAMENTO WHERE COD_FAMILIA = 1;
 
 -- Intentamos borrar la familia → DEBE FALLAR:
 DELETE FROM FAMILIA WHERE CODIGO = 1;
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_MEDICAMENTO_FAMILIA) violated - child record found
 -- ✗ No se puede borrar porque tiene medicamentos asignados.
@@ -139,6 +148,7 @@ SELECT * FROM COMP_EFEC WHERE COD_MED = 101;
 
 -- Intentamos borrar Paracetamol → DEBE FALLAR:
 DELETE FROM MEDICAMENTO WHERE CODIGO = 101;
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_COMP_CREDITO_MEDICAMENTO) violated - child record found
 -- ✗ No se puede borrar porque tiene compras registradas.
@@ -167,6 +177,7 @@ SELECT * FROM COMP_EFEC WHERE DNI_CLIEN = '12345678A';
 
 -- Intentamos borrar al cliente → DEBE FALLAR (por sus compras a crédito):
 DELETE FROM CLIENTE WHERE DNI = '12345678A';
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_COMP_CREDITO_CLIENTE) violated - child record found
 -- ✗ Aunque su C_CREDITO se borraría por CASCADE, las COMP_CREDITO
@@ -193,10 +204,13 @@ DELETE FROM CLIENTE WHERE DNI = '12345678A';
 
 -- Paso 1: eliminar compras al contado
 DELETE FROM COMP_EFEC WHERE DNI_CLIEN = '87654321B';
+COMMIT;
 -- Paso 2: eliminar compras a crédito
 DELETE FROM COMP_CREDITO WHERE DNI_CLIEN = '87654321B';
+COMMIT;
 -- Paso 3: eliminar el cliente (CASCADE borrará su C_CREDITO automáticamente)
 DELETE FROM CLIENTE WHERE DNI = '87654321B';
+COMMIT;
 
 -- Verificamos que el cliente y sus datos bancarios han desaparecido:
 SELECT * FROM CLIENTE    WHERE DNI = '87654321B';

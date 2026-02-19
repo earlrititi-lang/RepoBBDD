@@ -26,29 +26,30 @@ INSERT INTO DISENADOR VALUES ('D01', 'Ana García',    'UX Design',         5);
 INSERT INTO DISENADOR VALUES ('D02', 'Luis Martínez', 'Diseño Gráfico',    3);
 INSERT INTO DISENADOR VALUES ('D03', 'Marta López',   'Motion Graphics',   8);
 INSERT INTO DISENADOR VALUES ('D04', 'Carlos Ruiz',   'Diseño Editorial',  2);
+COMMIT;
 
 -- Proyectos (D01 y D03 son líderes)
 INSERT INTO PROYECTO VALUES ('P01', 'Rediseño Web',     'Renovación completa del sitio web corporativo',    'D01');
 INSERT INTO PROYECTO VALUES ('P02', 'App Móvil',        'Diseño de interfaz para aplicación iOS y Android', 'D03');
 INSERT INTO PROYECTO VALUES ('P03', 'Campaña Verano',   'Materiales gráficos para campaña de verano',       'D01');
-
+COMMIT;
 -- Roles del líder en cada proyecto
 INSERT INTO LIDER_ROL VALUES ('P01', 'Director Creativo');
 INSERT INTO LIDER_ROL VALUES ('P01', 'Responsable UX');
 INSERT INTO LIDER_ROL VALUES ('P02', 'Director de Arte');
 INSERT INTO LIDER_ROL VALUES ('P03', 'Director Creativo');
-
+COMMIT;
 -- Perfiles profesionales (uno por diseñador)
 INSERT INTO PERFIL_PROFESIONAL VALUES ('PP01', 'D01', DATE '2020-03-15');
 INSERT INTO PERFIL_PROFESIONAL VALUES ('PP02', 'D02', DATE '2021-07-22');
 INSERT INTO PERFIL_PROFESIONAL VALUES ('PP03', 'D03', DATE '2019-01-10');
-
+COMMIT;
 -- Colaboraciones
 INSERT INTO COLABORACION VALUES ('D02', 'P01', DATE '2024-01-10', 'activo');
 INSERT INTO COLABORACION VALUES ('D02', 'P03', DATE '2024-03-05', 'activo');
 INSERT INTO COLABORACION VALUES ('D04', 'P01', DATE '2024-02-01', 'finalizado');
 INSERT INTO COLABORACION VALUES ('D03', 'P03', DATE '2024-04-01', 'pausado');
-
+COMMIT;
 
 
 -- ================================================================
@@ -70,7 +71,7 @@ SELECT * FROM COLABORACION WHERE ID_PROYECTO = 'P03';
 
 -- Ahora eliminamos el proyecto P03:
 DELETE FROM PROYECTO WHERE ID_PROYECTO = 'P03';
-
+COMMIT;
 
 -- Verificamos que los LIDER_ROL de P03 han desaparecido (CASCADE FK_LR_PROY):
 SELECT * FROM LIDER_ROL WHERE ID_PROYECTO = 'P03';
@@ -85,7 +86,7 @@ INSERT INTO PROYECTO    VALUES ('P03', 'Campaña Verano', 'Materiales gráficos 
 INSERT INTO LIDER_ROL   VALUES ('P03', 'Director Creativo');
 INSERT INTO COLABORACION VALUES ('D02', 'P03', DATE '2024-03-05', 'activo');
 INSERT INTO COLABORACION VALUES ('D03', 'P03', DATE '2024-04-01', 'pausado');
-
+COMMIT;
 
 
 -- ----------------------------------------------------------------
@@ -101,10 +102,10 @@ SELECT * FROM PERFIL_PROFESIONAL WHERE ID_DISENADOR = 'D02';
 -- Pero D02 tiene colaboraciones → RESTRICT impedirá borrarle.
 -- Primero borramos sus colaboraciones para poder eliminarle:
 DELETE FROM COLABORACION WHERE ID_DISENADOR = 'D02';
-
+COMMIT;
 -- Ahora sí podemos borrar al diseñador:
 DELETE FROM DISENADOR WHERE ID_DISENADOR = 'D02';
-
+COMMIT;
 
 -- Verificamos que su perfil ha desaparecido (CASCADE FK_PERFIL_DIS):
 SELECT * FROM PERFIL_PROFESIONAL WHERE ID_DISENADOR = 'D02';
@@ -115,7 +116,7 @@ INSERT INTO DISENADOR        VALUES ('D02', 'Luis Martínez', 'Diseño Gráfico'
 INSERT INTO PERFIL_PROFESIONAL VALUES ('PP02', 'D02', DATE '2021-07-22');
 INSERT INTO COLABORACION      VALUES ('D02', 'P01', DATE '2024-01-10', 'activo');
 INSERT INTO COLABORACION      VALUES ('D02', 'P03', DATE '2024-03-05', 'activo');
-
+COMMIT;
 
 
 -- ================================================================
@@ -133,6 +134,7 @@ SELECT * FROM COLABORACION WHERE ID_DISENADOR = 'D02';
 
 -- Intentamos borrar a D02 → DEBE FALLAR con error de integridad:
 DELETE FROM DISENADOR WHERE ID_DISENADOR = 'D02';
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_COLAB_DIS) violated - child record found
 -- ✗ No se puede borrar porque tiene colaboraciones registradas.
@@ -153,6 +155,7 @@ SELECT * FROM PROYECTO WHERE ID_LIDER = 'D01';
 
 -- Intentamos borrar a D01 → DEBE FALLAR con error de integridad:
 DELETE FROM DISENADOR WHERE ID_DISENADOR = 'D01';
+COMMIT;
 -- ERROR esperado:
 --   ORA-02292: integrity constraint (FK_PROY_LIDER) violated - child record found
 -- ✗ No se puede borrar porque lidera proyectos activos.
