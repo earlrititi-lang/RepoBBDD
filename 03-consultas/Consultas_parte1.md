@@ -119,14 +119,6 @@ SELECT COD_ENTRENADOR, NOMBRE, DNI
 FROM ENTRENADOR;
 
 
-BUENAS PRÁCTICAS:
------------------
-✅ Evita usar SELECT * en producción (selecciona solo las columnas necesarias)
-✅ Usa nombres de columnas claros
-✅ Escribe las palabras clave SQL en MAYÚSCULAS para legibilidad
-✅ Indenta el código para mejor lectura
-
-
 ===============================================================================
 3. WHERE: FILTRADO DE DATOS
 ===============================================================================
@@ -372,15 +364,6 @@ SELECT NOMBRE, ATAQUE_BASE
 FROM POKEMON
 ORDER BY ATAQUE_BASE DESC
 FETCH FIRST 10 ROWS ONLY;
-
--- En Oracle también puedes usar ROWNUM (método antiguo):
-SELECT NOMBRE, ATAQUE_BASE
-FROM (
-    SELECT NOMBRE, ATAQUE_BASE
-    FROM POKEMON
-    ORDER BY ATAQUE_BASE DESC
-)
-WHERE ROWNUM <= 10;
 
 
 ORDENAR POR POSICIÓN DE COLUMNA:

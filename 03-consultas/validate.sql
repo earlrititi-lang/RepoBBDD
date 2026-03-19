@@ -1,5 +1,5 @@
 -- ================================================================
--- PASO 4: VERIFICAR CREACIÓN
+-- VERIFICAR CREACIÓN
 -- ================================================================
 
 -- Consulta para verificar que todas las tablas se crearon correctamente
