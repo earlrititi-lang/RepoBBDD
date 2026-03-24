@@ -197,7 +197,7 @@ EJEMPLO 6: Pokémon que NO son de tipo Fuego
 -------------------------------------------
 SELECT NOMBRE, COD_TIPO_1
 FROM POKEMON
-WHERE COD_TIPO_1 <> 1;
+WHERE COD_TIPO_1 != 1;
 
 O también:
 SELECT NOMBRE, COD_TIPO_1
@@ -209,7 +209,7 @@ OPERADOR IN:
 -----------
 Comprueba si un valor está en una lista de valores.
 
-SELECT NOMBRE
+SELECT NOMBRE, COD_TIPO_1
 FROM POKEMON
 WHERE COD_TIPO_1 IN (1, 2, 3);
 
@@ -255,8 +255,18 @@ WHERE NOMBRE LIKE '%saur';
 
 SELECT NOMBRE
 FROM POKEMON
-WHERE NOMBRE LIKE '_i%';
--- Resultado: Nombres que tienen 'i' como segundo carácter (Pikachu, Pichu...)
+WHERE NOMBRE LIKE '%i%';
+-- Resultado: Nombres que contienen 'i' 
+
+SELECT NOMBRE
+FROM POKEMON
+WHERE NOMBRE LIKE '%e__';
+-- Resultado: Nombres que contienen 'e' como antepenúltimo carácter
+
+SELECT NOMBRE
+FROM POKEMON
+WHERE NOMBRE LIKE '__y%';
+-- Resultado: Nombres que contienen 'y' como tercer carácter
 
 
 EJEMPLO 8: Pokémon cuyo nombre empieza con 'D'
