@@ -435,7 +435,8 @@ EJEMPLO 3: ¿Qué combinaciones de tipo primario y secundario existen?
 --------------------------------------------------------------------
 SELECT DISTINCT COD_TIPO_1, COD_TIPO_2
 FROM POKEMON
-ORDER BY COD_TIPO_1, COD_TIPO_2;
+WHERE COD_TIPO_2 IS NOT NULL
+ORDER BY COD_TIPO_1, COD_TIPO_2 DESC;
 
 
 ⚠️ IMPORTANTE: DISTINCT se aplica a TODAS las columnas seleccionadas, no solo
@@ -479,6 +480,9 @@ COUNT(columna)      - Cuenta filas donde columna NO es NULL
 COUNT(DISTINCT col) - Cuenta valores únicos (sin duplicados)
 
 
+⚠️ IMPORTANTE: COUNT POR DEFECTO NO CUENTA LOS VALORES NULL, excepto COUNT(*)
+
+
 EJEMPLO 1: ¿Cuántos pokémon hay en total?
 -----------------------------------------
 SELECT COUNT(*) AS TOTAL_POKEMON
@@ -491,6 +495,7 @@ EJEMPLO 2: ¿Cuántos pokémon tienen tipo secundario?
 ---------------------------------------------------
 SELECT COUNT(COD_TIPO_2) AS CON_TIPO_SECUNDARIO
 FROM POKEMON;
+
 
 
 EJEMPLO 3: ¿Cuántos tipos diferentes hay?
@@ -520,10 +525,7 @@ FROM POKEMON;
 
 EJEMPLO 2: ¿Cuántos movimientos han aprendido todos los pokémon?
 ----------------------------------------------------------------
-SELECT SUM(1) AS TOTAL_MOVIMIENTOS_APRENDIDOS
-FROM POKEMON_MOVIMIENTO;
 
-O simplemente:
 SELECT COUNT(*) AS TOTAL_MOVIMIENTOS_APRENDIDOS
 FROM POKEMON_MOVIMIENTO;
 
@@ -541,15 +543,16 @@ FROM POKEMON;
 
 EJEMPLO 2: ¿Cuál es el ataque promedio de pokémon de tipo Fuego?
 -----------------------------------------------------------------
-SELECT AVG(ATAQUE_BASE) AS PROMEDIO_ATAQUE_FUEGO
+SELECT AVG(ATAQUE_BASE) 
 FROM POKEMON
 WHERE COD_TIPO_1 = 1;
 
 
 EJEMPLO 3: Promedio redondeado
 ------------------------------
-SELECT ROUND(AVG(PS_BASE), 2) AS PROMEDIO_PS
-FROM POKEMON;
+SELECT ROUND(AVG(ATAQUE_BASE), 3) AS PROMEDIO_ATAQUE
+FROM POKEMON
+WHERE COD_TIPO_1 = 1;
 
 ROUND(valor, decimales) redondea el resultado.
 
@@ -593,9 +596,10 @@ SELECT NOMBRE, MAX(PS_BASE)
 FROM POKEMON;
 
 -- ✅ CORRECTO (usando subconsulta):
-SELECT NOMBRE, PS_BASE
+SELECT NOMBRE, PS_BASE AS PS_MAXIMO
 FROM POKEMON
 WHERE PS_BASE = (SELECT MAX(PS_BASE) FROM POKEMON);
+
 
 
 ===============================================================================
