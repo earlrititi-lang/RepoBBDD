@@ -24,13 +24,6 @@ FROM POKEMON
 GROUP BY COD_TIPO_1
 ORDER BY CANTIDAD DESC;
 
-Resultado:
-COD_TIPO_1  CANTIDAD
-----------  --------
-1           8        (Fuego)
-2           9        (Agua)
-10          6        (Psíquico)
-...
 
 
 EJEMPLO 2: PS promedio por tipo de pokémon
@@ -79,13 +72,6 @@ GROUP BY COD_TIPO_1, COD_TIPO_2
 ORDER BY COD_TIPO_1, COD_TIPO_2;
 
 
-EJEMPLO 6: Cantidad de pokémon por región y zona
-------------------------------------------------
-SELECT M.REGION, M.COD_ZONA, COUNT(P.COD_POKEMON) AS CANTIDAD
-FROM MAPA M
-LEFT JOIN POKEMON P ON M.COD_ZONA = P.COD_ZONA
-GROUP BY M.REGION, M.COD_ZONA
-ORDER BY M.REGION, CANTIDAD DESC;
 
 
 7.3. HAVING - Filtrar Grupos
