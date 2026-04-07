@@ -17,8 +17,6 @@
    8.2. LEFT JOIN (LEFT OUTER JOIN)
    8.3. RIGHT JOIN (RIGHT OUTER JOIN)
    8.4. FULL JOIN (FULL OUTER JOIN)
-   8.5. CROSS JOIN
-   8.6. SELF JOIN
 9. Subconsultas (Subqueries)
    9.1. Subconsultas en WHERE
    9.2. Subconsultas en FROM
@@ -26,10 +24,7 @@
 10. Funciones de Cadena (String)
 11. Funciones de Fecha
 12. Funciones para Manejo de NULL
-13. Operadores Avanzados
-14. CASE WHEN: Lógica Condicional
-15. UNION, INTERSECT, MINUS
-16. Consultas Complejas y Ejemplos Avanzados
+
 
 ===============================================================================
 REQUISITOS PREVIOS
