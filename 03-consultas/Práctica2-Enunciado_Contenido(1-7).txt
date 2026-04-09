@@ -1,0 +1,157 @@
+===============================================================================
+Práctica 2
+SELECT, WHERE, ORDER BY, DISTINCT, AGREGACIÓN, GROUP BY Y HAVING (1-7)
+Base de Datos Pokémon - 1º DAM
+===============================================================================
+
+1
+
+Muestra cuántos pokémon hay por tipo primario. Haz que solo aparezcan los tipos
+primarios que tengan al menos 3 pokémon. Ordena por total descendente.
+
+2
+
+Muestra el nombre, PS base y velocidad base de los pokémon cuyo PS base sea
+mayor que 50. Ordena por velocidad descendente y nombre ascendente.
+
+3
+
+Muestra las regiones distintas existentes en la tabla MAPA.
+
+4
+
+Calcula la potencia media de los movimientos cuya potencia sea mayor que 0 y
+la precisión máxima registrada en la tabla MOVIMIENTOS.
+
+5
+
+Muestra cuántos objetos hay por efecto, excluyendo los objetos cuyo precio sea 0.
+Haz que solo aparezcan los efectos que tengan al menos 1 objeto. Ordena por
+nombre de efecto ascendente.
+
+6
+
+Muestra el nombre y precio de los objetos cuyo precio esté entre 200 y 2500.
+Ordena por precio ascendente y, si empatan, por nombre descendente.
+
+7
+
+Muestra cuántos pokémon hay en cada zona asignada. No debes tener en cuenta
+los pokémon sin zona. Ordena por total descendente.
+
+8
+
+Muestra los códigos de tipo primario distintos que aparecen en la tabla POKEMON.
+
+9
+
+Muestra la experiencia media por estado en la tabla ENTRENADOR_POKEMON,
+considerando solo los registros con experiencia mayor que 50000. Haz que solo
+aparezcan los estados cuya experiencia media sea superior a 150000. Ordena por
+experiencia media descendente.
+
+10
+
+Muestra el nombre y la zona de los entrenadores que sí tengan zona asignada.
+Ordena por zona ascendente y nombre ascendente.
+
+11
+
+Calcula la media de ataque base por tipo primario para los pokémon cuyo ataque
+base sea mayor que 40. Muestra solo los tipos cuya media sea mayor que 70.
+Ordena por media descendente.
+
+12
+
+Muestra las categorías distintas existentes en la tabla MOVIMIENTOS.
+
+13
+
+Muestra el precio mínimo, máximo y medio de los objetos cuyo precio sea mayor
+que 0.
+
+14
+
+Muestra cuántos movimientos hay de cada categoría, pero solo teniendo en cuenta
+los movimientos con potencia mayor que 0. Haz que solo aparezcan las categorías
+que tengan al menos 5 movimientos. Ordena por total descendente.
+
+15
+
+Muestra el nombre del tipo y su resistencia para los tipos cuya resistencia
+no sea NULL. Ordena por nombre ascendente.
+
+16
+
+Muestra cuántos entrenadores hay por zona, excluyendo los entrenadores sin zona.
+Haz que solo aparezcan las zonas con 2 o más entrenadores. Ordena por zona
+ascendente.
+
+17
+
+Calcula cuántos pokémon hay en total, cuántos tienen zona asignada y cuántos
+tienen tipo secundario.
+
+18
+
+Muestra la potencia media de los movimientos por tipo. Solo debes tener en
+cuenta los movimientos con potencia mayor que 40. Haz que solo aparezcan los
+tipos que tengan al menos 2 movimientos de ese tipo. Ordena por potencia media
+descendente.
+
+19
+
+Muestra el nombre, potencia y precisión de los movimientos cuya potencia sea
+mayor que 0 y cuya precisión sea menor que 100. Ordena por precisión ascendente.
+
+20
+
+Muestra cuántos registros hay por estado en la tabla ENTRENADOR_POKEMON, pero
+solo teniendo en cuenta los pokémon cuyo nivel sea mayor o igual que 40.
+Haz que solo aparezcan los estados que tengan al menos 3 registros. Ordena por
+total descendente.
+
+21
+
+Muestra cuántos pokémon hay por zona, pero solo teniendo en cuenta los pokémon
+cuyo PS base sea mayor que 40 y cuya velocidad base sea mayor que 60. Excluye
+los pokémon sin zona. Haz que solo aparezcan las zonas con al menos 2 pokémon.
+Ordena por total descendente y zona ascendente.
+
+22
+
+Muestra la media de defensa base por tipo primario, pero solo teniendo en cuenta
+los pokémon cuya defensa base sea mayor que 30 y cuyo ataque base sea mayor que 40.
+Haz que solo aparezcan los tipos cuya media de defensa sea superior a 60.
+Ordena por media de defensa descendente.
+
+23
+
+Muestra cuántos movimientos hay por categoría, pero solo teniendo en cuenta los
+movimientos con potencia mayor que 40 y precisión mayor o igual que 95. Haz que
+solo aparezcan las categorías con al menos 3 movimientos. Ordena por total
+descendente y categoría ascendente.
+
+24
+
+Muestra la potencia media por tipo en la tabla MOVIMIENTOS, pero solo teniendo
+en cuenta los movimientos con potencia mayor que 0 y PP menor o igual que 20.
+Haz que solo aparezcan los tipos cuya potencia media sea superior a 75. Ordena
+por potencia media descendente y tipo ascendente.
+
+25
+
+Muestra cuántos registros hay por estado en ENTRENADOR_POKEMON, pero solo
+teniendo en cuenta los pokémon con experiencia mayor que 80000 y nivel mayor
+o igual que 35. Haz que solo aparezcan los estados con al menos 4 registros.
+Ordena por total descendente.
+
+26
+
+Muestra la cantidad total de objetos por entrenador en ENTRENADOR_OBJETO, pero
+solo teniendo en cuenta los registros cuya cantidad sea mayor o igual que 10 y
+cuyo objeto no sea la Ball Maestra (COD_OBJETO <> 9). Haz que solo aparezcan
+los entrenadores cuya suma total de objetos sea superior a 40. Ordena por
+cantidad total descendente y código de entrenador ascendente.
+
+===============================================================================

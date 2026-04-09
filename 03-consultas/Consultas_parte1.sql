@@ -21,9 +21,7 @@
    9.1. Subconsultas en WHERE
    9.2. Subconsultas en FROM
    9.3. Subconsultas en SELECT
-10. Funciones de Cadena (String)
-11. Funciones de Fecha
-12. Funciones para Manejo de NULL
+
 
 
 ===============================================================================
