@@ -934,9 +934,9 @@ Gyarados     2           9
 
 EJEMPLO 23: Tipos principales que tienen al menos 2 pokemon duales
 ------------------------------------------------------------------
-SELECT COD_TIPO_1, COUNT(COD_TIPO_2) AS DUALES
+SELECT COD_TIPO_1, COD_TIPO_2, COUNT(COD_TIPO_2) AS DUALES
 FROM POKEMON
-GROUP BY COD_TIPO_1
+GROUP BY COD_TIPO_1, COD_TIPO_2
 HAVING COUNT(COD_TIPO_2) >= 2
 ORDER BY DUALES DESC, COD_TIPO_1;
 
