@@ -1225,6 +1225,7 @@ COD_TIPO  NOMBRE
    Charmander -> 1 empareja con Fuego
    Squirtle   -> 2 empareja con Agua
    Bulbasaur  -> 4 empareja con Planta
+   Eso significa: trae el nombre del tipo cuyo codigo coincida con el tipo principal del pokemon.
 
 2. RESULTADO
    (Charmander, Fuego)
@@ -1271,6 +1272,8 @@ COD_HABILIDAD  NOMBRE
 1. INNER JOIN ON P.COD_HABILIDAD = H.COD_HABILIDAD
    Cada pokémon busca su habilidad por codigo.
 
+   Eso significa: trae la habilidad cuyo codigo coincida con la habilidad asignada a cada pokemon.
+
 2. RESULTADO
    Charmander -> Mar Llamas
    Squirtle   -> Torrente
@@ -1309,6 +1312,8 @@ COD_ZONA  NOMBRE
    Articuno   -> NULL, no empareja
    Mew        -> NULL, no empareja
 
+   Eso significa: trae la zona cuyo codigo coincida con la zona asignada a cada pokemon.
+
 2. RESULTADO
    Solo aparecen Charmander y Charizard.
    Articuno y Mew desaparecen porque INNER JOIN exige coincidencia.
@@ -1344,6 +1349,7 @@ COD_ZONA  NOMBRE
    Ash   -> 1 empareja
    Misty -> 4 empareja
    Lance -> NULL, no empareja
+   Eso significa: trae la zona cuyo codigo coincida con la zona asignada a cada entrenador.
 
 2. RESULTADO
    Ash y Misty aparecen con zona.
@@ -1388,11 +1394,15 @@ COD_HABILIDAD  NOMBRE
    Squirtle   -> Agua
    Pikachu    -> Eléctrico
 
+   Eso significa: primero trae el tipo cuyo codigo coincida con el tipo principal de cada pokemon.
+
 2. RESULTADO ANTERIOR INNER JOIN H
    Charmander -> Fuego + Mar Llamas
    Squirtle   -> Agua + Torrente
    Pikachu    -> Eléctrico + Electricidad Estática
 
+
+   Eso significa: despues trae la habilidad cuyo codigo coincida con la habilidad de ese mismo pokemon.
 
 EJEMPLO 6: JOIN de 4 tablas - Equipo de cada entrenador con detalles
 --------------------------------------------------------------------
@@ -1443,15 +1453,21 @@ COD_TIPO  NOMBRE
    Ash se empareja con 25, 6 y 130.
    Gary se empareja con 26 y otros pokémon.
 
+   Eso significa: primero trae las filas de la tabla intermedia que relacionan a cada entrenador con sus pokemon.
+
 2. + INNER JOIN P
    25 -> Pikachu
    6  -> Charizard
    130 -> Gyarados
 
+   Eso significa: despues trae el pokemon cuyo codigo coincida con cada fila de la tabla intermedia.
+
 3. + INNER JOIN T
    Pikachu   -> Eléctrico
    Charizard -> Fuego
    Gyarados  -> Agua
+
+   Eso significa: finalmente trae el tipo cuyo codigo coincida con el tipo principal de cada pokemon.
 
 4. WHERE E.NOMBRE = 'Ash Ketchum'
    Se eliminan las filas de Gary y de cualquier otro entrenador.
@@ -1463,6 +1479,198 @@ Ash Ketchum   Charizard   50     Rizardon  Fuego
 Ash Ketchum   Pikachu     45     Pikachu   Eléctrico
 Ash Ketchum   Gyarados    42     Gyara     Agua
 ...
+
+
+EJEMPLO 7: PokÃ©mon con movimientos de su mismo tipo principal
+-------------------------------------------------------------
+SELECT P.NOMBRE AS POKEMON,
+       M.NOMBRE AS MOVIMIENTO,
+       M.POTENCIA
+FROM POKEMON P
+INNER JOIN MOVIMIENTOS M ON P.COD_TIPO_1 = M.COD_TIPO
+WHERE P.NOMBRE = 'Pikachu'
+ORDER BY M.POTENCIA DESC, M.NOMBRE;
+
+LECTURA VISUAL:
+---------------
+TABLA IZQUIERDA: POKEMON
+NOMBRE    COD_TIPO_1
+--------  ----------
+Pikachu   3
+
+TABLA DERECHA: MOVIMIENTOS
+NOMBRE         COD_TIPO  POTENCIA
+-------------  --------  --------
+Impactrueno    3         40
+Rayo           3         90
+Trueno         3         110
+Chispa         3         65
+Onda Trueno    3         0
+
+1. INNER JOIN ON P.COD_TIPO_1 = M.COD_TIPO
+   Pikachu -> 3 empareja con todos los movimientos de tipo 3.
+
+   Eso significa: "trae los movimientos cuyo tipo coincida con el tipo principal del Pokemon".
+
+2. RESULTADO
+   Pikachu -> Impactrueno
+   Pikachu -> Rayo
+   Pikachu -> Trueno
+   Pikachu -> Chispa
+   Pikachu -> Onda Trueno
+
+3. IDEA CLAVE
+   Eso significa: “trae los movimientos cuyo tipo coincida con el tipo principal del Pokémon”.
+   Este JOIN es valido aunque no una una PK con una FK.
+   Ojo: esto NO significa que Pikachu aprenda realmente todos esos movimientos.
+
+
+EJEMPLO 8: PokÃ©mon y movimientos que realmente aprende
+------------------------------------------------------
+SELECT P.NOMBRE AS POKEMON,
+       M.NOMBRE AS MOVIMIENTO,
+       PM.NIVEL_APRENDIZAJE
+FROM POKEMON P
+INNER JOIN POKEMON_MOVIMIENTO PM ON P.COD_POKEMON = PM.COD_POKEMON
+INNER JOIN MOVIMIENTOS M ON PM.COD_MOVIMIENTO = M.COD_MOVIMIENTO
+WHERE P.NOMBRE = 'Charizard'
+ORDER BY PM.NIVEL_APRENDIZAJE;
+
+LECTURA VISUAL:
+---------------
+POKEMON
+COD_POKEMON  NOMBRE
+-----------  ---------
+6            Charizard
+
+POKEMON_MOVIMIENTO
+COD_POKEMON  COD_MOVIMIENTO  NIVEL_APRENDIZAJE
+-----------  --------------  -----------------
+6            2               1
+6            4               36
+6            39              40
+6            9               45
+
+MOVIMIENTOS
+COD_MOVIMIENTO  NOMBRE
+--------------  -------------
+2               Lanzallamas
+4               Sofoco
+39              Furia DragÃ³n
+9               Cascada
+
+1. P INNER JOIN PM
+   Charizard -> genera 4 filas, una por movimiento aprendido.
+
+   Eso significa: primero trae solo las filas de la tabla intermedia que pertenecen a Charizard.
+
+2. RESULTADO ANTERIOR INNER JOIN M
+   2  -> Lanzallamas
+   4  -> Sofoco
+   39 -> Furia DragÃ³n
+   9  -> Cascada
+
+   Eso significa: despues trae el movimiento cuyo codigo coincida con cada movimiento aprendido por Charizard.
+
+3. IDEA CLAVE
+   Aqui si se esta usando la tabla intermedia para representar una relaciÃ³n real N:N.
+
+
+EJEMPLO 9: Entrenadores y objetos que tienen
+--------------------------------------------
+SELECT E.NOMBRE AS ENTRENADOR,
+       O.NOMBRE AS OBJETO,
+       EO.CANTIDAD
+FROM ENTRENADOR E
+INNER JOIN ENTRENADOR_OBJETO EO ON E.COD_ENTRENADOR = EO.COD_ENTRENADOR
+INNER JOIN OBJETOS O ON EO.COD_OBJETO = O.COD_OBJETO
+WHERE E.NOMBRE = 'Ash Ketchum'
+ORDER BY EO.CANTIDAD DESC, O.NOMBRE;
+
+LECTURA VISUAL:
+---------------
+ENTRENADOR
+COD_ENTRENADOR  NOMBRE
+--------------  ------------
+1               Ash Ketchum
+
+ENTRENADOR_OBJETO
+COD_ENTRENADOR  COD_OBJETO  CANTIDAD
+--------------  ----------  --------
+1               1           10
+1               2           6
+1               4           3
+
+OBJETOS
+COD_OBJETO  NOMBRE
+----------  ------------
+1           PokÃ© Ball
+2           Super Ball
+4           PociÃ³n
+
+1. E INNER JOIN EO
+   Ash -> se empareja con las filas de su inventario.
+
+   Eso significa: primero trae las filas del inventario que pertenecen a Ash.
+
+2. RESULTADO ANTERIOR INNER JOIN O
+   1 -> PokÃ© Ball
+   2 -> Super Ball
+   4 -> PociÃ³n
+
+   Eso significa: despues trae el objeto cuyo codigo coincida con cada fila del inventario.
+
+3. IDEA CLAVE
+   Un INNER JOIN puede encadenarse varias veces para recorrer relaciones intermedias.
+
+
+EJEMPLO 10: PokÃ©mon con nombre de tipo principal y secundario
+-------------------------------------------------------------
+SELECT P.NOMBRE AS POKEMON,
+       T1.NOMBRE AS TIPO_PRINCIPAL,
+       T2.NOMBRE AS TIPO_SECUNDARIO
+FROM POKEMON P
+INNER JOIN TIPOS T1 ON P.COD_TIPO_1 = T1.COD_TIPO
+INNER JOIN TIPOS T2 ON P.COD_TIPO_2 = T2.COD_TIPO
+ORDER BY P.NOMBRE;
+
+LECTURA VISUAL:
+---------------
+POKEMON
+NOMBRE      COD_TIPO_1  COD_TIPO_2
+----------  ----------  ----------
+Bulbasaur   4           7
+Charizard   1           9
+Gengar      13          7
+
+TIPOS T1
+COD_TIPO  NOMBRE
+--------  --------
+4         Planta
+1         Fuego
+13        Fantasma
+
+TIPOS T2
+COD_TIPO  NOMBRE
+--------  --------
+7         Veneno
+9         Volador
+
+1. P INNER JOIN T1
+   Cada pokÃ©mon obtiene el nombre de su tipo principal.
+
+   Eso significa: primero trae el tipo principal cuyo codigo coincida con COD_TIPO_1.
+
+2. RESULTADO ANTERIOR INNER JOIN T2
+   Solo quedan los pokÃ©mon que SI tienen COD_TIPO_2.
+   Bulbasaur -> Planta / Veneno
+   Charizard -> Fuego / Volador
+   Gengar -> Fantasma / Veneno
+
+   Eso significa: despues trae el tipo secundario cuyo codigo coincida con COD_TIPO_2.
+
+3. IDEA CLAVE
+   Puedes hacer JOIN con la misma tabla dos veces si usas alias distintos.
 
 
 8.2. LEFT JOIN (LEFT OUTER JOIN)
@@ -1510,6 +1718,7 @@ COD_ZONA  NOMBRE
    Mewtwo     -> Cueva Celeste
    Mew        -> no empareja, pero se conserva
    Articuno   -> no empareja, pero se conserva
+   Eso significa: trae todos los pokemon y, si existe coincidencia, tambien su zona.
 
 2. RESULTADO
    Charmander  Pueblo Paleta
@@ -1551,6 +1760,7 @@ COD_ZONA  NOMBRE
    Ash       -> Pueblo Paleta
    Lance     -> no empareja, pero se conserva
    Giovanni  -> no empareja, pero se conserva
+   Eso significa: trae todos los entrenadores y, si existe coincidencia, tambien su zona.
 
 2. RESULTADO
    Ash Ketchum       Pueblo Paleta
@@ -1600,12 +1810,16 @@ COD_MOVIMIENTO  NOMBRE
    Pikachu -> genera 4 filas, una por movimiento
    Voltorb -> no empareja, pero queda con PM = NULL
 
+   Eso significa: trae todos los pokemon, tengan o no filas asociadas en la tabla intermedia.
+
 2. RESULTADO ANTERIOR LEFT JOIN MOVIMIENTOS
    Pikachu -> Impactrueno
    Pikachu -> Chispa
    Pikachu -> Rayo
    Pikachu -> Trueno
    Voltorb -> NULL
+
+   Eso significa: despues trae el nombre del movimiento si existe coincidencia; si no, queda NULL.
 
 3. IDEA CLAVE
    Un LEFT JOIN puede duplicar filas cuando hay varias coincidencias.
@@ -1639,6 +1853,8 @@ Golduck      4
 1. LEFT JOIN ON M.COD_ZONA = P.COD_ZONA
    Ciudad Celeste -> 4 filas emparejadas
    Monte Luna     -> 1 fila conservada con P.COD_POKEMON = NULL
+
+   Eso significa: trae todas las zonas y, si existe coincidencia, los pokemon de cada zona.
 
 2. GROUP BY M.NOMBRE
    Ciudad Celeste -> [8, 9, 54, 55]
@@ -1696,6 +1912,8 @@ Mew          NULL
    Charizard  -> Isla Canela
    Mew        -> no empareja, pero se conserva porque la tabla derecha es POKEMON
 
+   Eso significa: trae todos los pokemon y, si existe coincidencia, tambien su zona, pero escrito con RIGHT JOIN.
+
 2. RESULTADO
    Charmander  Pueblo Paleta
    Charizard   Isla Canela
@@ -1743,6 +1961,8 @@ Mew          NULL
    Pueblo Paleta + Charmander -> emparejan
    Monte Luna -> se conserva aunque no tenga pokemon
    Mew -> se conserva aunque no tenga zona
+
+   Eso significa: trae todas las zonas y todos los pokemon, coincidan o no entre si.
 
 2. RESULTADO
    Pueblo Paleta   Charmander

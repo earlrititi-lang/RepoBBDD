@@ -8,7 +8,7 @@ Sin JOIN
 -- ============================================================================
 -- 1
 -- Muestra cuántos pokémon hay por tipo primario. Haz que solo aparezcan los
--- tipos primarios que tengan al menos 3 pokémon. Ordena por total descendente.
+-- tipos primarios que tengan al menos 3 pokémon. Ordena por total descendente. (En este caso estamos contando los nulos)
 -- ============================================================================
 
 SELECT COD_TIPO_1, COUNT(*) AS TOTAL_POKEMON
@@ -62,8 +62,9 @@ SELECT EFECTO, COUNT(*) AS TOTAL_OBJETOS
 FROM OBJETOS
 WHERE PRECIO > 0
 GROUP BY EFECTO
-HAVING COUNT(*) >= 1
+HAVING TOTAL_OBJETOS >= 1
 ORDER BY EFECTO ASC;
+
 
 -- Comentario:
 -- Aunque HAVING COUNT(*) >= 1 no filtra mucho realmente, sirve para practicar
