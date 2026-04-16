@@ -1481,7 +1481,7 @@ Ash Ketchum   Gyarados    42     Gyara     Agua
 ...
 
 
-EJEMPLO 7: PokÃ©mon con movimientos de su mismo tipo principal
+EJEMPLO 7: Pokemon con movimientos de su mismo tipo principal
 -------------------------------------------------------------
 SELECT P.NOMBRE AS POKEMON,
        M.NOMBRE AS MOVIMIENTO,
@@ -1519,10 +1519,6 @@ Onda Trueno    3         0
    Pikachu -> Chispa
    Pikachu -> Onda Trueno
 
-3. IDEA CLAVE
-   Eso significa: “trae los movimientos cuyo tipo coincida con el tipo principal del Pokémon”.
-   Este JOIN es valido aunque no una una PK con una FK.
-   Ojo: esto NO significa que Pikachu aprenda realmente todos esos movimientos.
 
 
 EJEMPLO 8: PokÃ©mon y movimientos que realmente aprende

@@ -17,10 +17,7 @@
    8.2. LEFT JOIN (LEFT OUTER JOIN)
    8.3. RIGHT JOIN (RIGHT OUTER JOIN)
    8.4. FULL JOIN (FULL OUTER JOIN)
-9. Subconsultas (Subqueries)
-   9.1. Subconsultas en WHERE
-   9.2. Subconsultas en FROM
-   9.3. Subconsultas en SELECT
+
 
 
 
