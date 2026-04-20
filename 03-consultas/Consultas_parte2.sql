@@ -1199,20 +1199,22 @@ En los JOINS, la "LECTURA VISUAL" sigue este orden:
 4. Si hay WHERE o GROUP BY, cuando actuan.
 
 
-EJEMPLO 1: Pokémon con el nombre de su tipo
+EJEMPLO 1: Pokémon con el nombre de su tipo (INNER JOIN, LEFT JOIN Y RIGHT JOIN)
 -------------------------------------------
-SELECT P.NOMBRE AS POKEMON, T.NOMBRE AS TIPO
-FROM POKEMON P
-INNER JOIN TIPOS T ON P.COD_TIPO_1 = T.COD_TIPO;
+SELECT P.NOMBRE AS POKEMON, T.NOMBRE AS TIPO_PRINCIPAL
+FROM POKEMON P INNER JOIN TIPOS T ON P.COD_TIPO_1 = T.COD_TIPO;
+
+INNER JOIN: solo Pokémon con el nombre de su tipo principal.
+
 
 LECTURA VISUAL:
 ---------------
 TABLA IZQUIERDA: POKEMON
-NOMBRE       COD_TIPO_1
+NOMBRE       COD_TIPO_1  
 -----------  ----------
-Charmander   1
-Squirtle     2
-Bulbasaur    4
+Charmander   1              
+Squirtle     2             
+Bulbasaur    4            
 
 TABLA DERECHA: TIPOS
 COD_TIPO  NOMBRE
@@ -1241,6 +1243,153 @@ Bulbasaur    Planta
 Pikachu      Eléctrico
 ...
 
+EJEMPLO 1(bis): Pokémon con el nombre de su tipo principal y secundario (aunque no tenga)(INNER JOIN + LEFT JOIN)
+-------------------------------------------
+
+SELECT P.NOMBRE AS POKEMON, T1.NOMBRE AS TIPO_PRINCIPAL, T2.NOMBRE AS TIPO_SECUNDARIO
+FROM POKEMON P INNER JOIN TIPOS T1 ON P.COD_TIPO_1 = T1.COD_TIPO LEFT JOIN TIPOS T2 ON P.COD_TIPO_2 = T2.COD_TIPO;
+
+INNER JOIN + LEFT JOIN: todos los Pokémon, y el secundario aunque no exista.
+
+TABLA IZQUIERDA: POKEMON
+
+NOMBRE       COD_TIPO_1   COD_TIPO_2
+-----------  -----------  -----------
+Charmander   1            NULL
+Squirtle     2            NULL
+Bulbasaur    4            8
+
+TABLA DERECHA 1: TIPOS como T1 para TIPO_PRINCIPAL
+
+COD_TIPO   NOMBRE
+---------  --------
+1          Fuego
+2          Agua
+4          Planta
+8          Veneno
+
+TABLA DERECHA 2: TIPOS como T2 para TIPO_SECUNDARIO
+
+COD_TIPO   NOMBRE
+---------  --------
+1          Fuego
+2          Agua
+4          Planta
+8          Veneno
+
+INNER JOIN T1 ON P.COD_TIPO_1 = T1.COD_TIPO
+Charmander -> 1 empareja con Fuego
+Squirtle -> 2 empareja con Agua
+Bulbasaur -> 4 empareja con Planta
+
+Eso significa: trae el nombre del tipo principal del pokemon.
+
+RESULTADO PARCIAL
+
+POKEMON      TIPO_PRINCIPAL   COD_TIPO_2
+-----------  ---------------  -----------
+Charmander   Fuego            NULL
+Squirtle     Agua             NULL
+Bulbasaur    Planta           8
+
+LEFT JOIN T2 ON P.COD_TIPO_2 = T2.COD_TIPO
+
+Charmander -> NULL no empareja con nada, pero como es LEFT JOIN se conserva la fila
+Squirtle -> NULL no empareja con nada, pero como es LEFT JOIN se conserva la fila
+Bulbasaur -> 8 empareja con Veneno
+
+Eso significa: trae el nombre del tipo secundario si existe; si no existe, devuelve NULL.
+
+RESULTADO FINAL
+
+POKEMON      TIPO_PRINCIPAL   TIPO_SECUNDARIO
+-----------  ---------------  ----------------
+Charmander   Fuego            NULL
+Squirtle     Agua             NULL
+Bulbasaur    Planta           Veneno
+
+EJEMPLO 1(tris): Pokémon con el nombre de su tipo principal y secundario, conservando todos los tipos secundarios de la tabla TIPOS (INNER JOIN + RIGHT JOIN)
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT P.NOMBRE AS POKEMON, T1.NOMBRE AS TIPO_PRINCIPAL, T2.NOMBRE AS TIPO_SECUNDARIO
+FROM POKEMON P
+INNER JOIN TIPOS T1 ON P.COD_TIPO_1 = T1.COD_TIPO
+RIGHT JOIN TIPOS T2 ON P.COD_TIPO_2 = T2.COD_TIPO;
+
+INNER JOIN + RIGHT JOIN: todos los tipos de la derecha, y el Pokémon solo si coincide con ese tipo secundario.
+
+TABLA IZQUIERDA: POKEMON
+
+NOMBRE       COD_TIPO_1   COD_TIPO_2
+-----------  -----------  -----------
+Charmander   1            NULL
+Squirtle     2            NULL
+Bulbasaur    4            8
+Gastly       3            8
+
+TABLA DERECHA 1: TIPOS como T1 para TIPO_PRINCIPAL
+
+COD_TIPO   NOMBRE
+---------  --------
+1          Fuego
+2          Agua
+3          Fantasma
+4          Planta
+8          Veneno
+9          Volador
+
+TABLA DERECHA 2: TIPOS como T2 para TIPO_SECUNDARIO
+
+COD_TIPO   NOMBRE
+---------  --------
+1          Fuego
+2          Agua
+3          Fantasma
+4          Planta
+8          Veneno
+9          Volador
+
+1. INNER JOIN T1 ON P.COD_TIPO_1 = T1.COD_TIPO
+
+   Charmander -> 1 empareja con Fuego
+   Squirtle -> 2 empareja con Agua
+   Bulbasaur -> 4 empareja con Planta
+   Gastly -> 3 empareja con Fantasma
+
+   Eso significa: trae el nombre del tipo principal de cada pokemon.
+
+2. RESULTADO PARCIAL
+
+POKEMON      TIPO_PRINCIPAL   COD_TIPO_2
+-----------  ---------------  -----------
+Charmander   Fuego            NULL
+Squirtle     Agua             NULL
+Bulbasaur    Planta           8
+Gastly       Fantasma         8
+
+3. RIGHT JOIN T2 ON P.COD_TIPO_2 = T2.COD_TIPO
+
+   Bulbasaur -> 8 empareja con Veneno
+   Gastly -> 8 empareja con Veneno
+   Fuego -> no tiene pokemon con COD_TIPO_2 = 1, pero como es RIGHT JOIN se conserva la fila
+   Agua -> no tiene pokemon con COD_TIPO_2 = 2, pero como es RIGHT JOIN se conserva la fila
+   Fantasma -> no tiene pokemon con COD_TIPO_2 = 3, pero como es RIGHT JOIN se conserva la fila
+   Planta -> no tiene pokemon con COD_TIPO_2 = 4, pero como es RIGHT JOIN se conserva la fila
+   Volador -> no tiene pokemon con COD_TIPO_2 = 9, pero como es RIGHT JOIN se conserva la fila
+
+   Eso significa: trae todos los tipos secundarios de la tabla TIPOS, aunque ningun pokemon los tenga como segundo tipo.
+
+4. RESULTADO FINAL
+
+POKEMON      TIPO_PRINCIPAL   TIPO_SECUNDARIO
+-----------  ---------------  ----------------
+Bulbasaur    Planta           Veneno
+Gastly       Fantasma         Veneno
+NULL         NULL             Fuego
+NULL         NULL             Agua
+NULL         NULL             Fantasma
+NULL         NULL             Planta
+NULL         NULL             Volador
 
 EJEMPLO 2: Pokémon con su habilidad
 -----------------------------------
