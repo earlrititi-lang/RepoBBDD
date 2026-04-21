@@ -43,6 +43,37 @@ Documento reorganizado con una estructura unica:
 - [Ejercicio 24: Estados con al menos 3 registros de nivel alto](#ejercicio-24-estados-con-al-menos-3-registros-de-nivel-alto)
 - [Ejercicio 25: Zonas con al menos 2 pokemon sin hacer joins](#ejercicio-25-zonas-con-al-menos-2-pokemon-sin-hacer-joins)
 
+## Resumen rapido: cambiar a `COUNT(*)`
+Esta tabla resume si cambiar el conteo principal del ejercicio por `COUNT(*)` mantiene la salida final de la consulta original.
+
+| Ejercicio | Resultado al usar `COUNT(*)` | Motivo principal |
+|---|---|---|
+| 1 | Igual | La consulta original ya usa `COUNT(*)`; con `COUNT(P.COD_POKEMON)` tambien coincidiria porque hay `INNER JOIN`. |
+| 2 | No aplica | No usa `COUNT`; el agregado importante es `AVG`. |
+| 3 | Igual | Hay `INNER JOIN` y solo quedan filas reales de `ENTRENADOR_POKEMON`. |
+| 4 | Salida final igual, pero concepto peor | El `LEFT JOIN` daria `1` a objetos sin coincidencias, pero `HAVING >= 3` los elimina. |
+| 5 | Igual | Hay `INNER JOIN`; ademas `POKEMON_MOVIMIENTO` no permite repetir el mismo movimiento para un pokemon. |
+| 6 | Salida final igual, pero concepto peor | Los grupos vacios contarian `1`, pero `HAVING >= 3` los elimina; no se repite pokemon por entrenador. |
+| 7 | Salida final igual, pero concepto peor | Los tipos sin movimientos validos caen por `AVG(NULL)` y `HAVING`; cada movimiento tiene codigo unico. |
+| 8 | No aplica | No usa `COUNT`; trabaja con `MIN`, `MAX` y `AVG`. |
+| 9 | Salida final igual, pero concepto peor | Los objetos sin coincidencias caen por `AVG(NULL)` y `HAVING`; no se repite objeto por entrenador. |
+| 10 | Igual | Los joins no multiplican pokemon: `POKEMON` e `HABILIDADES` se unen por claves. |
+| 11 | No aplica | No hay `GROUP BY` ni `COUNT`. |
+| 12 | No aplica | Es una consulta de detalle sin agregados. |
+| 13 | No aplica | Es una consulta de detalle sin agregados. |
+| 14 | No aplica | Es una consulta de detalle sin agregados. |
+| 15 | No aplica | No cuenta filas; muestra detalle conservando tipos. |
+| 16 | Cambia | Las zonas sin pokemon rapidos pasarian de `0` a `1`. |
+| 17 | Cambia | Los tipos sin pokemon duales fuertes pasarian de `0` a `1`. |
+| 18 | Cambia | Las habilidades sin pokemon validos pasarian de `0` a `1`. |
+| 19 | Cambia | Los objetos sin entrenadores validos pasarian de `0` a `1`. |
+| 20 | Cambia | Los entrenadores sin pokemon top pasarian de `0` a `1`. |
+| 21 | No aplica | No usa agregados. |
+| 22 | No aplica | No usa agregados. |
+| 23 | No aplica | No usa agregados. |
+| 24 | Igual | No hay join; `COUNT(*)` cuenta filas reales de `ENTRENADOR_POKEMON`. |
+| 25 | Igual | No hay join y `COD_ZONA IS NOT NULL` elimina los `NULL`. |
+
 ---
 
 <a id="ejercicio-1"></a>
@@ -119,6 +150,8 @@ En un `INNER JOIN`, una condicion sobre la tabla enlazada suele dar el mismo res
 
 ## `COUNT(*)` y `COUNT(columna)`
 En esta consulta concreta, `COUNT(*)` y `COUNT(P.COD_POKEMON)` dan el mismo resultado en la version original porque el `INNER JOIN` solo deja filas con coincidencia real entre `POKEMON` y `MAPA`.
+
+Tambien coincidiria con `COUNT(DISTINCT P.COD_POKEMON)` porque `COD_POKEMON` es clave primaria y cada pokemon pertenece como mucho a una zona.
 
 La diferencia importante aparece cuando usas un `OUTER JOIN` para conservar filas de una tabla aunque no haya coincidencia en la otra:
 
@@ -281,6 +314,8 @@ Con `INNER JOIN`, la salida final no cambia.
 ## `COUNT(*)` y `COUNT(columna)`
 Aqui `COUNT(*)` y `COUNT(EP.COD_POKEMON)` coinciden en la consulta original porque el `INNER JOIN` solo deja filas reales de entrenador y pokemon.
 
+Tambien coincidiria con `COUNT(DISTINCT EP.COD_POKEMON)` para cada entrenador, porque `ENTRENADOR_POKEMON` tiene clave primaria `(COD_ENTRENADOR, COD_POKEMON)` y no admite el mismo pokemon repetido para un entrenador.
+
 Si quisieras conservar a todos los entrenadores con `LEFT JOIN` y contar solo los pokemon validos, seria mejor `COUNT(EP.COD_POKEMON)`.
 
 ---
@@ -356,7 +391,9 @@ La salida final no cambia con estos inserts, pero el `LEFT JOIN` deja de conserv
 ## `COUNT(*)` y `COUNT(columna)`
 Aqui es importante usar `COUNT(EO.COD_OBJETO)` y no `COUNT(*)`.
 
-Si usaras `COUNT(*)` en un `OUTER JOIN`, un objeto sin inventarios validos seguiria generando una fila y contaria como `1`, que no es lo que quieres medir.
+En esta consulta concreta, si solo miras la salida final, `COUNT(*)` no cambiaria los objetos que aparecen porque el `HAVING COUNT(...) >= 3` elimina los grupos sin suficientes coincidencias.
+
+Pero como significado del dato es peor: si usaras `COUNT(*)` en un `OUTER JOIN`, un objeto sin inventarios validos seguiria generando una fila y contaria como `1`, que no es lo que quieres medir.
 
 ---
 
@@ -430,6 +467,8 @@ Con `INNER JOIN`, la salida final no cambia.
 
 ## `COUNT(*)` y `COUNT(columna)`
 `COUNT(PM.COD_MOVIMIENTO)` es la opcion didacticamente mas clara porque cuenta movimientos reales.
+
+En la consulta original, `COUNT(*)` daria el mismo resultado porque hay `INNER JOIN`: cada fila que llega al grupo es una fila real de `POKEMON_MOVIMIENTO`. Ademas, la clave primaria `(COD_POKEMON, COD_MOVIMIENTO)` impide que el mismo movimiento se repita para el mismo pokemon.
 
 En un `OUTER JOIN`, `COUNT(*)` podria contar la fila preservada aunque `PM` fuese `NULL`.
 
@@ -505,6 +544,8 @@ La salida final no cambia con estos inserts, pero el `LEFT JOIN` pierde su efect
 
 ## `COUNT(DISTINCT)` y `NULL`
 `COUNT(DISTINCT EP.COD_POKEMON)` ignora los `NULL`. Por eso, los entrenadores sin coincidencias utiles acaban con conteo `0`.
+
+Si se cambia `COUNT(DISTINCT EP.COD_POKEMON)` o `COUNT(EP.COD_POKEMON)` por `COUNT(*)`, en este ejercicio la salida final tambien queda igual. Los entrenadores sin coincidencias utiles pasarian de `0` a `1`, pero no llegan al `HAVING >= 3`; y los entrenadores que si pasan no pueden tener el mismo pokemon repetido porque la clave primaria es `(COD_ENTRENADOR, COD_POKEMON)`.
 
 Ese es uno de los motivos por los que varias versiones terminan devolviendo la misma salida final.
 
@@ -599,6 +640,8 @@ En este tipo de ejercicios, el resultado final puede estabilizarse por dos motiv
 
 - `COUNT(DISTINCT ...)` ignora `NULL`.
 - `AVG(...)` devuelve `NULL` si no hay valores, y luego `HAVING` elimina ese grupo.
+
+Si cambias `COUNT(DISTINCT M.COD_MOVIMIENTO)` por `COUNT(*)`, la salida final tambien queda igual en este ejercicio. Los tipos sin movimientos validos tendrian `COUNT(*) = 1`, pero `AVG(M.POTENCIA)` seria `NULL` y no pasarian el `HAVING`; y los tipos que si pasan cuentan movimientos reales, con `COD_MOVIMIENTO` unico por clave primaria.
 
 ---
 
@@ -780,6 +823,8 @@ Este es un ejemplo claro de salida final estable:
 - `AVG(...)` sobre grupos vacios da `NULL`.
 - `HAVING` elimina luego los grupos que no cumplen.
 
+Si sustituyes `COUNT(DISTINCT EO.COD_ENTRENADOR)` por `COUNT(*)`, la salida final tambien queda igual aqui. Los objetos sin coincidencias no pasan por el `AVG(NULL)`, y para los objetos con coincidencias reales la clave primaria `(COD_ENTRENADOR, COD_OBJETO)` impide que el mismo entrenador aparezca dos veces con el mismo objeto.
+
 ---
 
 <a id="ejercicio-10"></a>
@@ -876,6 +921,8 @@ Con `INNER JOIN`, la salida final no cambia.
 
 ## Nota sobre varios agregados
 Aqui conviven `AVG`, `MIN` y `COUNT(DISTINCT)`. Esa combinacion hace que el filtro final sea muy exigente y que varias variantes distintas terminen devolviendo la misma salida final.
+
+Si cambias `COUNT(DISTINCT P.COD_POKEMON)` por `COUNT(*)`, la salida final no cambia en este ejercicio. Los joins son internos y no multiplican filas: cada pokemon tiene un unico `COD_POKEMON` y una unica habilidad asociada.
 
 ---
 
@@ -1537,7 +1584,7 @@ Aqui es especialmente facil equivocarse.
 - El conteo correcto es `COUNT(DISTINCT EO.COD_ENTRENADOR)`.
 - `COUNT(*)` estaria mal porque contaria la fila preservada del objeto aunque no haya coincidencia.
 - `COUNT(O.COD_OBJETO)` tambien estaria mal porque `OBJETOS` es la tabla conservada.
-- Si quitases `DISTINCT`, un mismo objeto podria contar varias filas del mismo entrenador si el modelo lo permitiera.
+- En este modelo, quitar `DISTINCT` no cambia el conteo de las filas reales porque la clave primaria `(COD_ENTRENADOR, COD_OBJETO)` impide repetir el mismo objeto para el mismo entrenador. En un modelo que permitiera duplicados, si cambiaria.
 
 No solo importa contar la tabla correcta; a veces tambien importa contar en distinto.
 
@@ -1827,6 +1874,8 @@ Como no hay joins, `COUNT(*)` es totalmente natural aqui: solo cuenta filas real
 
 No hay riesgo de contar filas preservadas con `NULL`, porque no existe join externo.
 
+Si usaras `COUNT(ESTADO)`, tambien daria lo mismo porque `ESTADO` es `NOT NULL` en la tabla. Lo que si cambiaria el significado seria contar `COUNT(DISTINCT COD_POKEMON)`, porque ahi ya no contarias registros, sino especies distintas.
+
 ---
 
 <a id="ejercicio-25"></a>
@@ -1876,4 +1925,6 @@ No aplica.
 Aqui `COUNT(*)` es correcto porque solo contamos filas reales de `POKEMON` ya filtradas por `WHERE COD_ZONA IS NOT NULL`.
 
 Si usaras `COUNT(COD_ZONA)`, el resultado seria el mismo porque el `WHERE` ya ha eliminado los `NULL`.
+
+Tambien coincidiria con `COUNT(COD_POKEMON)` porque `COD_POKEMON` es clave primaria y nunca es `NULL`.
 
