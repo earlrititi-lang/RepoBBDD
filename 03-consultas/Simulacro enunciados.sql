@@ -38,7 +38,7 @@ Muestra el nombre del pokemon y cuantos movimientos tiene aprendidos, pero solo 
 
 Muestra el nombre de todos los entrenadores y cuantos pokemon distintos tiene cada uno en `ENTRENADOR_POKEMON` con nivel mayor o igual que 40. Haz que solo aparezcan los entrenadores que tengan al menos 3 pokemon distintos en esas condiciones. Ordena por total descendente y nombre del entrenador ascendente.
 
----
+
 
 # Ejercicio 7
 
@@ -151,3 +151,15 @@ Muestra el estado y cuantos registros hay en `ENTRENADOR_POKEMON`, pero solo ten
 # Ejercicio 25
 
 Muestra el codigo de zona y cuantos pokemon hay en cada una, excluyendo los pokemon sin zona. Haz que solo aparezcan las zonas con al menos 2 pokemon. Ordena por total descendente y codigo de zona ascendente.
+
+# Ejercicio 26
+
+Muestra el nombre del Pokémon y el nombre de los movimientos que sean del mismo tipo que el tipo primario del Pokémon. Solo deben aparecer movimientos con potencia mayor que 0. Ordena por nombre del Pokémon ascendente y nombre del movimiento ascendente.
+
+SELECT P.NOMBRE AS POKEMON,
+       M.NOMBRE AS MOVIMIENTO
+FROM POKEMON P
+INNER JOIN MOVIMIENTOS M
+    ON P.COD_TIPO_1 = M.COD_TIPO
+WHERE M.POTENCIA > 0
+ORDER BY P.NOMBRE ASC, M.NOMBRE ASC;

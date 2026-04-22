@@ -459,6 +459,7 @@ SUM()    - Suma valores
 AVG()    - Calcula promedio
 MAX()    - Encuentra el valor máximo
 MIN()    - Encuentra el valor mínimo
+ROUND()  - Redondea valores numéricos
 
 
 6.1. COUNT() - Contar Filas
